@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     'corsheaders',
 
     'users',
+    'wallets',
 ]
 
 MIDDLEWARE = [
@@ -142,3 +143,6 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+
+HTTP_TIMEOUT =15
