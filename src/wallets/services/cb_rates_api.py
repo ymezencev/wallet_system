@@ -1,7 +1,12 @@
+import logging
+
 import requests
 from requests import RequestException
 
 from config.settings import HTTP_TIMEOUT
+
+
+logger = logging.getLogger('wallets')
 
 
 def get_cb_currency_rates(base_currency):
@@ -14,15 +19,15 @@ def get_cb_currency_rates(base_currency):
         response = requests.request(method='GET', url=url,
                                     timeout=HTTP_TIMEOUT)
     except RequestException as e:
-        # logging
+        logger.error(f'Get currency rates. Service not available. {e}')
         raise e
     response_json = response.json()
     rates = response_json.get('rates')
     error = response_json.get('error')
     if error:
-        # logging
+        logger.error(f'Error when getting currency from CB. {error}')
         raise ValueError(f"Error when getting currency from CB. {error}")
-    # logging info
+    logger.info(f'Getting all available rates with base: {base_currency}')
     return rates
 
 
@@ -38,16 +43,15 @@ def get_cb_exchange_rate(from_currency, to_currency, base_currency):
         response = requests.request(method='GET', url=url,
                                     timeout=HTTP_TIMEOUT)
     except requests.exceptions.RequestException as e:
-        # logging
+        logger.error(f'Get currency exchange rates. '
+                     f'Service not available. {e}')
         raise e
     response_json = response.json()
     rates = response_json.get('rates')
     error = response_json.get('error')
+    text = f'{from_currency} to {to_currency}, base {base_currency} {error}'
     if error:
-        # logging
-        raise ValueError(
-            f"Error when getting rates exchange from CB."
-            f"{from_currency} to {to_currency} with base {base_currency} "
-            f"{error}")
-    # logging info
+        logger.error(f'text_error')
+        raise ValueError('Error when getting rates exchange from CB. ' + text)
+    logger.info('Getting currency exchange rates. ' + text)
     return rates

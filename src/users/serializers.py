@@ -1,3 +1,5 @@
+import logging
+
 from django.contrib.auth import get_user_model
 from django.db import transaction
 from rest_auth.serializers import LoginSerializer as RestAuthLoginSerializer
@@ -8,7 +10,9 @@ from rest_framework import serializers
 from wallets.services.currency import get_currency
 from wallets.services.wallet import create_wallet
 
+
 User = get_user_model()
+logger = logging.getLogger('application')
 
 
 class UserLoginSerializer(RestAuthLoginSerializer):
@@ -42,7 +46,10 @@ class UserRegisterSerializer(RestAuthRegisterSerializer):
         currency_symbol = self.validated_data['currency_symbol']
         currency = get_currency(symbol=currency_symbol)
         balance = self.validated_data['balance']
-        create_wallet(user=user, currency=currency, balance=balance)
+        wallet = create_wallet(user=user, currency=currency, balance=balance)
+        logger.info(f'User has registered. '
+                    f'{user.id} {user.username} {user.email} '
+                    f'[wallet: {wallet.serial_number}]')
         return user
 
 

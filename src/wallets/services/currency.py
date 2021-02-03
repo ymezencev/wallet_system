@@ -1,9 +1,12 @@
+import logging
+
 from requests import RequestException
 
 from wallets.models import Currency
 from wallets.services.cb_rates_api import get_cb_currency_rates
 
 
+logger = logging.getLogger('wallets')
 BASE_CURRENCY = 'RUB'
 
 
@@ -12,13 +15,12 @@ def update_currency_rates():
     try:
         rates = get_cb_currency_rates(base_currency=BASE_CURRENCY)
     except RequestException:
-        # logging can't update
+        logger.info(f'Currency rates were NOT updated. API not available.')
         return
     for symbol, rate in rates.items():
         obj, created = Currency.objects.update_or_create(
             symbol=symbol, defaults={'rate': rate})
-
-    # logging info
+    logger.info(f'Currency rates were updated')
 
 
 def get_all_currency_rates():
@@ -28,7 +30,7 @@ def get_all_currency_rates():
 
 
 def get_currency(symbol):
-    """Получаем валюту по названию"""
+    """Получаем валюту по названию или None"""
     if not symbol:
         return
     try:
