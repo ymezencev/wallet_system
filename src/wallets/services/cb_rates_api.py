@@ -7,6 +7,7 @@ from config.settings import HTTP_TIMEOUT
 
 
 logger = logging.getLogger('wallets')
+CB_URL = 'https://api.exchangeratesapi.io/latest?base='
 
 
 def get_cb_currency_rates(base_currency):
@@ -14,7 +15,7 @@ def get_cb_currency_rates(base_currency):
     Получение всех доступных курсов валют на текщий момент API
     --> {"RUB": 1.0, "EUR": 0.0109973859, .......}
     """
-    url = f'https://api.exchangeratesapi.io/latest?base={base_currency}'
+    url = f'{CB_URL}{base_currency}'
     try:
         response = requests.request(method='GET', url=url,
                                     timeout=HTTP_TIMEOUT)
@@ -37,8 +38,8 @@ def get_cb_exchange_rate(from_currency, to_currency, base_currency):
     --> {"USD": 0.013188569, "GBP": 0.0096262147}
     """
 
-    url = 'https://api.exchangeratesapi.io/latest?base={0}&symbols={1},{2}'.\
-        format(from_currency, to_currency, base_currency)
+    url = '{0}{1}&symbols={2},{3}'.\
+        format(CB_URL, from_currency, to_currency, base_currency)
     try:
         response = requests.request(method='GET', url=url,
                                     timeout=HTTP_TIMEOUT)

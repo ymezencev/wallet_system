@@ -1,7 +1,5 @@
 from django.contrib.auth import get_user_model
-from django.test import Client
 from rest_framework import status
-from rest_framework.test import APITestCase
 
 from users.tests.base_tests import REGISTER_URL, REGISTER_DATA, LOGIN_URL, \
     LOGIN_DATA, BaseTestCase

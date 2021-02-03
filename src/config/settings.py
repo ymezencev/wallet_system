@@ -23,6 +23,7 @@ INSTALLED_APPS = [
 
     'allauth',
     'allauth.account',
+    'allauth.socialaccount',
     'rest_auth',
     'rest_auth.registration',
     'rest_framework',
@@ -147,7 +148,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
-
+TEST_RUNNER = "core.settings.NonInteractiveTestRunner"
 HTTP_TIMEOUT = 15
 
 

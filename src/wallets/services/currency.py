@@ -18,7 +18,7 @@ def update_currency_rates():
         logger.info(f'Currency rates were NOT updated. API not available.')
         return
     for symbol, rate in rates.items():
-        obj, created = Currency.objects.update_or_create(
+        Currency.objects.update_or_create(
             symbol=symbol, defaults={'rate': rate})
     logger.info(f'Currency rates were updated')
 
@@ -35,6 +35,6 @@ def get_currency(symbol):
         return
     try:
         currency = Currency.objects.get(symbol=symbol)
-    except Currency.DoesNotExist as e:
+    except Currency.DoesNotExist:
         return
     return currency

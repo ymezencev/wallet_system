@@ -8,6 +8,8 @@ logger = logging.getLogger('wallets')
 
 def create_wallet(user, currency, balance):
     """Создание кошелька"""
+    if not isinstance(balance, int):
+        raise ValueError('Баланс должен быть числовым значением')
     if balance < 0:
         raise ValueError('Начальный баланс не может быть отрицательным.')
     wallet = Wallet(user=user, currency=currency, balance=balance)
