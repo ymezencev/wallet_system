@@ -28,20 +28,15 @@ class CBRatesAPITestCase(APITestCase):
         """Получаем обмен валют"""
         from_currency = 'RUB'
         to_currency = 'EUR'
-        base_currency = 'RUB'
-        result = get_cb_exchange_rate(
-            from_currency, to_currency, base_currency)
-        self.assertEquals(set(result.keys()), {'RUB', 'EUR'})
+        result = get_cb_exchange_rate(from_currency, to_currency)
+        self.assertIsInstance(result, float)
 
     def test_get_exchange_rate_invalid_data(self):
         """Получаем обмен валют, данные по валютам переданы неверно"""
         from_currency = 'RUB'
         to_currency = 'EUR'
-        base_currency = 'RUB'
         with self.assertRaises(ValueError):
-            result = get_cb_exchange_rate('AAA', to_currency, base_currency)
+            get_cb_exchange_rate('AAA', to_currency)
         with self.assertRaises(ValueError):
-            result = get_cb_exchange_rate(from_currency, 'AAA', base_currency)
-        with self.assertRaises(ValueError):
-            result = get_cb_exchange_rate(from_currency, to_currency, 'AAA')
+            get_cb_exchange_rate(from_currency, 'AAA')
 

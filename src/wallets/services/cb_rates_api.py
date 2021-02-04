@@ -32,27 +32,29 @@ def get_cb_currency_rates(base_currency):
     return rates
 
 
-def get_cb_exchange_rate(from_currency, to_currency, base_currency):
+def get_cb_exchange_rate(from_currency, to_currency):
     """
     Получение курса обмена между указанными валютами
     --> {"USD": 0.013188569, "GBP": 0.0096262147}
     """
 
     url = '{0}{1}&symbols={2},{3}'.\
-        format(CB_URL, from_currency, to_currency, base_currency)
+        format(CB_URL, from_currency, to_currency, from_currency)
     try:
         response = requests.request(method='GET', url=url,
                                     timeout=HTTP_TIMEOUT)
     except requests.exceptions.RequestException as e:
-        logger.error(f'Get currency exchange rates. '
+        logger.error(f'Get currency exchange rate. '
                      f'Service not available. {e}')
         raise e
     response_json = response.json()
-    rates = response_json.get('rates')
+    rate = response_json.get('rates')
+    if rate:
+        rate = rate.get(to_currency)
     error = response_json.get('error')
-    text = f'{from_currency} to {to_currency}, base {base_currency} {error}'
+    text = f'{from_currency} to {to_currency}, base {from_currency} {error}'
     if error:
         logger.error(f'text_error')
         raise ValueError('Error when getting rates exchange from CB. ' + text)
     logger.info('Getting currency exchange rates. ' + text)
-    return rates
+    return rate
