@@ -1,6 +1,8 @@
 import os
 from pathlib import Path
 
+from django.utils.log import DEFAULT_LOGGING
+
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
@@ -21,6 +23,7 @@ INSTALLED_APPS = [
 
     'allauth',
     'allauth.account',
+    'allauth.socialaccount',
     'rest_auth',
     'rest_auth.registration',
     'rest_framework',
@@ -32,6 +35,7 @@ INSTALLED_APPS = [
     'corsheaders',
 
     'users',
+    'wallets',
 ]
 
 MIDDLEWARE = [
@@ -46,6 +50,7 @@ MIDDLEWARE = [
     'debug_toolbar.middleware.DebugToolbarMiddleware',
     'debug_toolbar_force.middleware.ForceDebugToolbarMiddleware',
 
+    'core.middleware.ExceptionHandler',
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -96,7 +101,7 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
     ),
-    'TEST_REQUEST_DEFAULT_FORMAT': 'json',
+    # 'TEST_REQUEST_DEFAULT_FORMAT': 'json',
     'DEFAULT_FILTER_BACKENDS': (
         'django_filters.rest_framework.DjangoFilterBackend',
     ),
@@ -142,3 +147,41 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+TEST_RUNNER = "core.settings.NonInteractiveTestRunner"
+HTTP_TIMEOUT = 15
+
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': True,
+    'formatters': {
+        'server': DEFAULT_LOGGING['formatters']['django.server'],
+    },
+    'handlers': {
+        'application': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(BASE_DIR, './logs/application.log'),
+            'formatter': 'server'
+        },
+        'wallets': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(BASE_DIR, './logs/wallets.log'),
+            'formatter': 'server'
+        },
+    },
+    'loggers': {
+        'application': {
+            'handlers': ['application'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+        'wallets': {
+            'handlers': ['wallets'],
+            'level': 'DEBUG',
+            'propagate': False,
+        }
+    },
+}
