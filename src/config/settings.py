@@ -172,6 +172,12 @@ LOGGING = {
             'filename': os.path.join(BASE_DIR, './logs/wallets.log'),
             'formatter': 'server'
         },
+        'transactions': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(BASE_DIR, './logs/transactions.log'),
+            'formatter': 'server'
+        },
     },
     'loggers': {
         'application': {
@@ -183,6 +189,11 @@ LOGGING = {
             'handlers': ['wallets'],
             'level': 'DEBUG',
             'propagate': False,
-        }
+        },
+        'transactions':{
+            'handlers': ['transactions'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
     },
 }

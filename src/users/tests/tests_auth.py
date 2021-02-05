@@ -2,13 +2,13 @@ from django.contrib.auth import get_user_model
 from rest_framework import status
 
 from users.tests.base_tests import REGISTER_URL, REGISTER_DATA, LOGIN_URL, \
-    LOGIN_DATA, BaseTestCase
+    LOGIN_DATA, BaseUserTestCase
 from wallets.models import Wallet
 
 User = get_user_model()
 
 
-class UserAuthRegisterTestCase(BaseTestCase):
+class UserAuthRegisterUserTestCase(BaseUserTestCase):
     """Тесты регистрации пользователя"""
 
     def test_register_success(self):
@@ -53,7 +53,7 @@ class UserAuthRegisterTestCase(BaseTestCase):
         self.assertEquals(status.HTTP_400_BAD_REQUEST, response.status_code)
 
 
-class UserAuthLoginTestCase(BaseTestCase):
+class UserAuthLoginUserTestCase(BaseUserTestCase):
     """Тесты авторизации пользователя"""
 
     def setUp(self):

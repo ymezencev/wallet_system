@@ -32,27 +32,34 @@ def get_cb_currency_rates(base_currency):
     return rates
 
 
-def get_cb_exchange_rate(from_currency, to_currency):
+def get_cb_exchange_rate(from_currency_symbol, to_currency_symbol):
     """
     Получение курса обмена между указанными валютами
     --> {"USD": 0.013188569, "GBP": 0.0096262147}
     """
+    if not isinstance(from_currency_symbol, str) or not isinstance(
+            to_currency_symbol, str):
+        raise ValueError('Error getting currency rate. Bad request.')
 
     url = '{0}{1}&symbols={2},{3}'.\
-        format(CB_URL, from_currency, to_currency, from_currency)
+        format(CB_URL, from_currency_symbol,
+               to_currency_symbol, from_currency_symbol)
     try:
         response = requests.request(method='GET', url=url,
                                     timeout=HTTP_TIMEOUT)
-    except requests.exceptions.RequestException as e:
+    except RequestException as e:
         logger.error(f'Get currency exchange rate. '
                      f'Service not available. {e}')
         raise e
     response_json = response.json()
-    rate = response_json.get('rates')
-    if rate:
-        rate = rate.get(to_currency)
+    try:
+        rate = response_json.get('rates').get(to_currency_symbol)
+    except AttributeError as e:
+        raise ValueError('Error getting currency rate. Bad request.')
+
     error = response_json.get('error')
-    text = f'{from_currency} to {to_currency}, base {from_currency} {error}'
+    text = f'{from_currency_symbol} to {to_currency_symbol}, ' \
+           f'base {from_currency_symbol} {error}'
     if error:
         logger.error(f'text_error')
         raise ValueError('Error when getting rates exchange from CB. ' + text)

@@ -27,7 +27,7 @@ LOGOUT_URL = reverse('rest_logout')
 USER_URL = reverse('rest_user_details')
 
 
-class BaseTestCase(APITestCase):
+class BaseUserTestCase(APITestCase):
     """Тесты"""
 
     def setUp(self):
